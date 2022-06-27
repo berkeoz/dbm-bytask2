@@ -1,6 +1,7 @@
 @Library('dbmaestro-library') _
 
 /**********   VARIABLES BEGIN   **********/
+def varsPath = "jenkins-pipelines/vars.groovy"
 def dbmJenkinsNode = "node111-dbmaestro"
 /**********    VARIABLES END    **********/
 
@@ -10,8 +11,7 @@ try {
     node(dbmJenkinsNode){
       checkout scm
       //rootDir = pwd()
-      myvars = load "jenkins-pipelines/vars.groovy"
-
+      myvars = load varsPath
       //if ticket number comes from a Jenkins parameter
       if(env.TICKET){
         issueKey = env.TICKET
