@@ -25,6 +25,8 @@ def dbmJenkinsNode = "node111-dbmaestro"
 //Git
 @Field
 def rootFolder = "packages\\mssql\\regular" //DBmaestro packages root folder
+@Field
+def getPackagesFilePath = "GetPackagesOutput.json"
 
 //Jira - optional - no need to delete anything if you are not using Jira
 @Field
