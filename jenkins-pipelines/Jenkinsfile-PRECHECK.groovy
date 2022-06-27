@@ -47,31 +47,16 @@ try{
   }
 
   //DRY RUN ENV (PRECHECK)
-  stage("PreCheck"){
+  stage("DryRun"){
     node (dbmJenkinsNode) {
-      dbmPreCheck(myvars.javaCmd, myvars.projectName, myvars.packageFolder, myvars.server, myvars.authType, myvars.useSSL, myvars.dbmCredentials)
-    }
-  }
-
-  //RELEASE SOURCE ENV (READY FOR RELEASE TO NEXT ENVS)
-  stage("Promote to ${myvars.rsEnvName}"){
-    node (dbmJenkinsNode) {
-      dbmUpgrade(myvars.javaCmd, myvars.projectName, myvars.rsEnvName, packageFolder, myvars.server, myvars.authType, myvars.useSSL, myvars.dbmCredentials)
-    }
-  }
-
-  //QA ENV
-  stage("Promote to ${myvars.qaEnvName}"){
-    node (dbmJenkinsNode) {
-      dbmUpgrade(myvars.javaCmd, myvars.projectName, myvars.qaEnvName, packageFolder, myvars.server, myvars.authType, myvars.useSSL, myvars.dbmCredentials)
+      dbmPreCheck(myvars.javaCmd, myvars.projectName, packageFolder, myvars.server, myvars.authType, myvars.useSSL, myvars.dbmCredentials)
     }
   }
 
   if(feedbackToJira){
     stage("Update Jira Issue"){
         withEnv(["JIRA_SITE=${myvars.jiraSite}"]) {
-            jiraIssueTransitionTo(issueKey, myvars.qaUpgTransitionId)
-            jiraIssueAddLabel(issueKey, myvars.qaUpgOkLabel)
+            jiraIssueAddLabel(issueKey, myvars.precheckOkLabel)
         }
     }
   }
@@ -80,7 +65,7 @@ try{
 catch(e){
   if(feedbackToJira){
     withEnv(["JIRA_SITE=${myvars.jiraSite}"]) {
-        jiraIssueAddLabel(issueKey, myvars.qaUpgErrorLabel)
+        jiraIssueAddLabel(issueKey, myvars.precheckErrorLabel)
     }
   }
   throw e
